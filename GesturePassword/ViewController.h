@@ -1,0 +1,15 @@
+//
+//  ViewController.h
+//  GesturePassword
+//
+//  Created by wanglei on 16/6/17.
+//  Copyright © 2016年 wanglei. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface ViewController : UIViewController
+
+
+@end
+
