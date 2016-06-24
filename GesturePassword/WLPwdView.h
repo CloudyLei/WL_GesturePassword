@@ -13,13 +13,13 @@
 
 - (void) checkPasswordSuccess:(NSString *) pwd;
 
-- (void) checkPasswordFail:(NSString *) pwd;
-
 @end
 
 @interface WLPwdView : UIView
 
 @property (nonatomic,assign) id<WLPwdViewDelegate> delegate;
+@property (nonatomic,strong) UIImage *normalImage;
+@property (nonatomic,strong) UIImage *selectedImae;
 
 - (instancetype) initWithFrame:(CGRect) frame;
 

@@ -29,12 +29,17 @@
 - (instancetype) initWithFrame:(CGRect)frame{
 
     if(self==[super initWithFrame:frame]){
-    
+        
+        //初始化变量
+        allSpots=[[NSMutableArray alloc] init];
+        selectedSpots=[NSMutableArray array];
+        
         //创建圆点添加到密码面板上
         [self createSpotOnView];
     }
     return self;
 }
+
 
 
 //创建圆点添加到面板上
@@ -50,17 +55,12 @@
         CGFloat spotY=VerSpace+(row-1)*(SpotDiameter+margin);
         
         UIButton *btnImg=[[UIButton alloc] initWithFrame:CGRectMake(spotX, spotY, SpotDiameter, SpotDiameter)];
-        [btnImg setImage:[UIImage imageNamed:@"space.png"] forState:UIControlStateNormal];
-        [btnImg setImage:[UIImage imageNamed:@"selected.png"] forState:UIControlStateSelected];
+        [btnImg setImage:self.normalImage forState:UIControlStateNormal];
+        [btnImg setImage:self.selectedImae forState:UIControlStateSelected];
         btnImg.userInteractionEnabled=NO;
         btnImg.tag=i+2017;
         
         [self addSubview:btnImg];
-        
-        if(allSpots==nil){
-            allSpots=[[NSMutableArray alloc] init];
-        }
-        
         [allSpots addObject:btnImg];
     }
 }
@@ -84,10 +84,6 @@
             btnImg.selected=YES;
             
             //将当前的btnImg 添加到被选择的点数组内
-            if(selectedSpots==nil){
-                selectedSpots=[NSMutableArray array];
-            }
-            
             [selectedSpots addObject:btnImg];
         }
     }];
@@ -108,18 +104,18 @@
         UIButton *btnImg=(UIButton *) obj;
         
         if(CGRectContainsPoint(btnImg.frame, point)){
-            
-            btnImg.selected=YES;
-            
-            if(selectedSpots==nil){
-                selectedSpots=[NSMutableArray array];
-            }
-            
+        
             //判断当前的点是否被选择过
-            NSInteger index=[selectedSpots indexOfObject:btnImg];
-            if(index>=0 && index<selectedSpots.count){
-                return ;
+            if(btnImg.isSelected){
+            
+                //表示之前被选择过的点，直接结束密码勾画
+                return;
+                
+            }else{
+                
+                btnImg.selected=YES;
             }
+            
             //将当前的btnImg 添加到被选择的点数组内
             [selectedSpots addObject:btnImg];
             
@@ -177,9 +173,10 @@
             
             [self.delegate checkPasswordSuccess:pwd];
         
-        }else if([_delegate respondsToSelector:@selector(checkPasswordFail:)]){
-
-            [self.delegate checkPasswordFail:pwd];
+        }else{
+            
+            //直接调用密码验证错误的处理方法
+            
         }
     }
     
@@ -193,8 +190,5 @@
     
     [self createSpotOnView];
 }
-
-
-
 
 @end
