@@ -19,6 +19,8 @@
     CGPoint lastPoint;
     CGPoint currentPoint;
     NSString *rightPwd;
+    
+    UILabel *tipLabel;
 }
 
 @end
@@ -36,6 +38,10 @@
         
         //创建圆点添加到密码面板上
         [self createSpotOnView];
+        
+        //创建一个显示错误的 label
+        tipLabel=[[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width-200)*0.5, 15, 200, 15)];
+        [self addSubview:tipLabel];
     }
     return self;
 }
@@ -55,8 +61,8 @@
         CGFloat spotY=VerSpace+(row-1)*(SpotDiameter+margin);
         
         UIButton *btnImg=[[UIButton alloc] initWithFrame:CGRectMake(spotX, spotY, SpotDiameter, SpotDiameter)];
-        [btnImg setImage:self.normalImage forState:UIControlStateNormal];
-        [btnImg setImage:self.selectedImae forState:UIControlStateSelected];
+        [btnImg setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"space.png" ofType:nil]] forState:UIControlStateNormal];
+        [btnImg setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"selected.png" ofType:nil]] forState:UIControlStateSelected];
         btnImg.userInteractionEnabled=NO;
         btnImg.tag=i+2017;
         
@@ -69,6 +75,8 @@
 //触摸开始
 - (void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
 
+    tipLabel.text=@"";
+    
     //获取当前触摸开始的坐标
     UITouch *touch=[[event allTouches] anyObject];
     CGPoint point=[touch locationInView:[touch view]];
@@ -169,19 +177,32 @@
         
     }else{
         
-        if([rightPwd isEqualToString:pwd] && [_delegate respondsToSelector:@selector(checkPasswordSuccess:)]){
+        if([rightPwd isEqualToString:pwd]&& [_delegate respondsToSelector:@selector(checkPasswordSuccess:)]){
             
             [self.delegate checkPasswordSuccess:pwd];
         
         }else{
-            
             //直接调用密码验证错误的处理方法
-            
+            tipLabel.text=@"密码错误";
+            tipLabel.textColor=[UIColor redColor];
+            tipLabel.textAlignment=NSTextAlignmentCenter;
+            tipLabel.font=[UIFont systemFontOfSize:13.0];
         }
+        
+        rightPwd=@"";
     }
     
     //将原先的线条痕迹删除
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    //[self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if([obj isKindOfClass:UILabel.class]){
+        
+        }else{
+        
+            [obj removeFromSuperview];
+        }
+    }];
     
     //清空原有数据
     [allSpots removeAllObjects];
@@ -189,6 +210,17 @@
     lastPoint=currentPoint=CGPointZero;
     
     [self createSpotOnView];
+}
+
+
+//设置按钮不同状态下的图片
+- (void) changeBtnDefaultImageToCustom:(UIImage *)image forState:(UIControlState)state{
+
+    for (UIButton *btn in allSpots) {
+        
+        [btn setImage:image forState:state];
+        
+    }
 }
 
 @end

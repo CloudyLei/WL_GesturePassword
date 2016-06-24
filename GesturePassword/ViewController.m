@@ -22,8 +22,6 @@
     self.view.backgroundColor=[UIColor grayColor];
     
     WLPwdView *pwdView=[[WLPwdView alloc] initWithFrame:CGRectMake(0, 30, self.view.frame.size.width, 400)];
-    pwdView.normalImage=[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"space.png" ofType:nil]];
-    pwdView.selectedImae=[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"selected.png" ofType:nil]];
     pwdView.backgroundColor=[UIColor whiteColor];
     
     
